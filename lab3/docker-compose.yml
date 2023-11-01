@@ -1,0 +1,25 @@
+version: "3"
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong!PasswOrd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test:
+        [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "YourStrong!PasswOrd", "-Q", "SELECT 1", ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: BankDeposits
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
